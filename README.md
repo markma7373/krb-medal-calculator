@@ -1,2 +1,12 @@
-# krb-medal-calculator
-Kingdom Rush Battles 真人對戰獎牌變化預測與資料回報工具
+# KRB 獎牌變化預測工具
+
+這是依玩家實測資料建立的 Kingdom Rush Battles 真人對戰獎牌變化預測工具。
+
+公開網站：https://markma7373.github.io/krb-medal-calculator/
+
+## 功能
+
+- 輸入雙方玩家與卡片等級，預測獎牌變化及系統推算勝率。
+- 輸入真實獎牌變化後，判斷是否命中或相差多少分數檔位。
+- 可在瀏覽器本機記住我方牌組。
+- 可一鍵複製完整測試資料；不會自動上傳任何資料。
