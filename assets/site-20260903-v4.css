@@ -96,3 +96,18 @@ footer { padding-top: 22px; color: #64748b; text-align: center; font-size: .82re
   .prediction-panel, .report-panel { padding: 14px 12px; }
   .report-heading { align-items: flex-start; }
 }
+
+/* Language controls and room for English labels on small screens. */
+.language-control { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 16px; font-size: .9rem; }
+.language-control select { font: inherit; min-height: 40px; padding: 6px 12px; border: 1px solid #64748b; border-radius: 9px; background: #18253a; color: #f8fafc; }
+.language-control select:focus-visible { outline: 2px solid #facc15; outline-offset: 3px; }
+html[lang="en"] .panel-emblem { font-size: .7rem; }
+html[lang="en"] .deck-row { grid-template-columns: 4.7rem repeat(4, minmax(0, 1fr)); }
+.copy-button { flex-shrink: 0; }
+@media (max-width: 520px) {
+  html[lang="en"] .result-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html[lang="en"] .result-heading { grid-column: 1 / -1; padding-bottom: 5px; }
+  html[lang="en"] .result-choice { font-size: 1.4rem; }
+}
+
+.actual-field small { display: block; margin-top: 3px; }

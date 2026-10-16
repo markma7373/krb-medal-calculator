@@ -2,20 +2,19 @@
   "use strict";
 
   const model = window.KRBMedalModel;
+  const { t } = window.KRBI18n;
   const REMEMBER_KEY = "krb-medal-remember-deck";
   const LAST_DECK_KEY = "krb-medal-last-deck";
   let selectedResult = "";
   let currentPrediction = null;
 
   const byId = (id) => document.getElementById(id);
-  const field = (label) => document.querySelector(`input[aria-label="${label}"]`);
-  const sideFields = (side) => ({
-    hero: field(`${side}英雄等級`),
-    towers: [1, 2, 3, 4].map((index) => field(`${side}第${index}張塔等級`)),
-    spells: [1, 2, 3].map((index) => field(`${side}第${index}張法術等級`)),
-  });
-  const selfFields = sideFields("我方");
-  const opponentFields = sideFields("對方");
+  const sideFields = (side) => {
+    const inputs = [...document.querySelectorAll(`[data-side="${side}"] .level-input`)];
+    return { hero: inputs[0], towers: inputs.slice(1, 5), spells: inputs.slice(5, 8) };
+  };
+  const selfFields = sideFields("self");
+  const opponentFields = sideFields("opponent");
   const allLevelInputs = [selfFields.hero, ...selfFields.towers, ...selfFields.spells, opponentFields.hero, ...opponentFields.towers, ...opponentFields.spells];
   const resultButtons = { win: byId("result-win"), loss: byId("result-loss") };
   const applyButton = byId("apply-deck");
@@ -111,30 +110,33 @@
   function comparison(prediction, actual) {
     const scores = selectedResult === "win" ? model.WIN_SCORES : model.LOSS_SCORES;
     const actualIndex = scores.indexOf(actual);
-    if (actualIndex === -1) return { kind: "new", message: "出現尚未收錄的新分數" };
-    if (actual === prediction.medal) return { kind: "hit", message: "預測命中" };
+    if (actualIndex === -1) return { kind: "new", message: t("出現尚未收錄的新分數") };
+    if (actual === prediction.medal) return { kind: "hit", message: t("預測命中") };
     const predictedIndex = scores.indexOf(prediction.medal);
-    return { kind: "miss", message: `預測未命中，模型預測分數為${formatMedal(prediction.medal)}，相差${Math.abs(actualIndex - predictedIndex)}個分數檔位` };
+    const steps = Math.abs(actualIndex - predictedIndex);
+    return { kind: "miss", message: window.KRBI18n.language === "en"
+      ? `Prediction did not match. Predicted medal change: ${formatMedal(prediction.medal)}. Difference: ${steps} ${steps === 1 ? "step" : "steps"} in the medal-change table.`
+      : `預測未命中，模型預測分數為${formatMedal(prediction.medal)}，相差${steps}個分數檔位` };
   }
 
   function sideText(side) {
-    return [`英雄：${side.hero}`, `四塔：${side.towers.join("、")}`, `三法術：${side.spells.join("、")}`].join("\n");
+    return [`${t("英雄：")} ${side.hero}`, `${t("四塔：")} ${side.towers.join(window.KRBI18n.language === "en" ? ", " : "、")}`, `${t("三法術：")} ${side.spells.join(window.KRBI18n.language === "en" ? ", " : "、")}`].join("\n");
   }
 
   function makeReport(self, opponent, prediction, actual, status) {
     return [
-      `模型版本：${model.VERSION}`,
+      `${t("模型版本：")} ${model.VERSION}`,
       "",
-      "我方資料：",
+      t("我方資料："),
       sideText(self),
       "",
-      "對方資料：",
+      t("對方資料："),
       sideText(opponent),
       "",
-      `比賽結果：${selectedResult === "win" ? "勝" : "負"}`,
-      `預測獎牌變化：${formatMedal(prediction.medal)}`,
-      `我方實際獎牌變化：${formatMedal(actual)}`,
-      `模型判定：${status.message}`,
+      `${t("比賽結果：")} ${selectedResult === "win" ? t("勝") : t("負")}`,
+      `${t("預測獎牌變化：")} ${formatMedal(prediction.medal)}`,
+      `${t("我方實際獎牌變化：")} ${formatMedal(actual)}`,
+      `${t("模型判定：")} ${status.message}`,
     ].join("\n");
   }
 
@@ -181,11 +183,11 @@
     const text = reportTextArea.value;
     try {
       await navigator.clipboard.writeText(text);
-      notify("回報文字已複製");
+      notify(t("回報文字已複製"));
     } catch {
       reportTextArea.focus();
       reportTextArea.select();
-      notify(document.execCommand("copy") ? "回報文字已複製" : "複製失敗，請手動選取文字");
+      notify(document.execCommand("copy") ? t("回報文字已複製") : t("複製失敗，請手動選取文字"));
     }
   }
 
@@ -205,10 +207,10 @@
   });
   applyButton.addEventListener("click", () => {
     const deck = loadSavedDeck();
-    if (!deck) return notify("找不到可套用的牌組資料");
+    if (!deck) return notify(t("找不到可套用的牌組資料"));
     fillSide(selfFields, deck);
     render();
-    notify("已套用上次我方牌組");
+    notify(t("已套用上次我方牌組"));
   });
   byId("clear-all").addEventListener("click", () => {
     clearSide(selfFields);
@@ -220,9 +222,14 @@
     });
     actualInput.value = "";
     render();
-    notify("已清除目前輸入資料");
+    notify(t("已清除目前輸入資料"));
   });
   byId("copy-report").addEventListener("click", copyReport);
+
+  document.addEventListener("languagechange", () => {
+    byId("toast").hidden = true;
+    render();
+  });
 
   const savedDeck = loadSavedDeck();
   applyButton.disabled = !savedDeck;

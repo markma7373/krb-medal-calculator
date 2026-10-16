@@ -1,120 +1,115 @@
-<!doctype html>
-<html lang="zh-Hant">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#08111f" />
-    <meta name="description" content="依玩家實測資料預測 Kingdom Rush Battles 真人對戰獎牌變化。" />
-    <title>KRB 獎牌變化預測工具</title>
-    <link rel="icon" href="/krb-medal-calculator/favicon.svg" />
-    <link rel="stylesheet" href="/krb-medal-calculator/assets/site-20260903-v4.css" />
-    <script src="/krb-medal-calculator/assets/model-20260903-v4.js"></script>
-    <script src="/krb-medal-calculator/assets/app-20260903-v4.js" defer></script>
-  </head>
-  <body>
-    <main class="page-shell">
-      <header class="site-header">
-        <div>
-          <p class="eyebrow">⚔ KINGDOM RUSH BATTLES</p>
-          <h1>獎牌變化預測工具</h1>
-          <p class="intro">只需填入等級數字，順序不影響計算；目前模型不計算卡片稀有度或顏色。</p>
-        </div>
-        <div class="model-badge">模型 2026-09-03-v4</div>
-      </header>
+<!DOCTYPE html>
 
-      <div class="battle-grid">
-        <section class="battle-panel self-panel" aria-labelledby="self-title">
-          <header class="panel-header">
-            <span class="panel-emblem" aria-hidden="true">我</span>
-            <div><p>BLUE</p><h2 id="self-title">我方</h2></div>
-          </header>
-          <div class="deck-fields" data-side="self">
-            <div class="deck-row hero-row">
-              <span class="row-label">英雄</span>
-              <input class="level-input" aria-label="我方英雄等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-            <div class="deck-row">
-              <span class="row-label">四塔</span>
-              <input class="level-input" aria-label="我方第1張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="我方第2張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="我方第3張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="我方第4張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-            <div class="deck-row">
-              <span class="row-label">三法術</span>
-              <input class="level-input" aria-label="我方第1張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="我方第2張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="我方第3張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-          </div>
-        </section>
-
-        <section class="battle-panel opponent-panel" aria-labelledby="opponent-title">
-          <header class="panel-header">
-            <span class="panel-emblem" aria-hidden="true">對</span>
-            <div><p>RED</p><h2 id="opponent-title">對方</h2></div>
-          </header>
-          <div class="deck-fields" data-side="opponent">
-            <div class="deck-row hero-row">
-              <span class="row-label">英雄</span>
-              <input class="level-input" aria-label="對方英雄等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-            <div class="deck-row">
-              <span class="row-label">四塔</span>
-              <input class="level-input" aria-label="對方第1張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="對方第2張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="對方第3張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="對方第4張塔等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-            <div class="deck-row">
-              <span class="row-label">三法術</span>
-              <input class="level-input" aria-label="對方第1張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="對方第2張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-              <input class="level-input" aria-label="對方第3張法術等級" inputmode="numeric" pattern="[0-9]*" maxlength="2" />
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <section class="control-panel">
-        <div class="result-row" role="radiogroup" aria-label="比賽結果">
-          <strong class="result-heading">比賽結果：</strong>
-          <button class="result-choice" id="result-win" type="button" role="radio" aria-checked="false" data-result="win"><span class="radio-circle" aria-hidden="true"></span><span>勝利</span></button>
-          <button class="result-choice" id="result-loss" type="button" role="radio" aria-checked="false" data-result="loss"><span class="radio-circle" aria-hidden="true"></span><span>敗北</span></button>
-        </div>
-        <div class="tool-row">
-          <button class="secondary-button" id="apply-deck" type="button">套用上次我方牌組</button>
-          <button class="secondary-button" id="clear-all" type="button">清除目前輸入資料</button>
-        </div>
-        <label class="remember-row" for="remember-deck">
-          <input id="remember-deck" type="checkbox" />
-          <span><strong>記住我的牌組</strong><small>勾選後，完整的我方牌組會保存在這台裝置，下次開啟時自動帶入。</small></span>
-        </label>
-      </section>
-
-      <section class="prediction-panel" id="prediction-panel" aria-live="polite" hidden>
-        <div>
-          <p class="section-kicker">模型預測</p>
-          <p class="prediction-score" id="prediction-score"></p>
-          <p class="prediction-note">依雙方最高 3 張卡的等級總和差直接對照分數。</p>
-        </div>
-        <div class="actual-field">
-          <label for="actual-medal">我方的實際獎牌變化 <small>（不需填入正負號）</small></label>
-          <input id="actual-medal" class="actual-input" inputmode="numeric" pattern="[+-]?[0-9]*" maxlength="3" placeholder="例如：30" />
-        </div>
-        <div id="comparison-status" class="comparison-status" hidden></div>
-      </section>
-
-      <section class="report-panel" id="report-panel" hidden>
-        <div class="report-heading">
-          <div><h2>回報文字</h2><p>無論預測是否命中，都請複製並回報。</p></div>
-          <button class="copy-button" id="copy-report" type="button">一鍵複製</button>
-        </div>
-        <textarea id="report-text" aria-label="自動產生的回報文字" readonly></textarea>
-      </section>
-
-      <footer>本工具依玩家實測資料建立；模型版本更新後，預測結果可能改變。</footer>
-    </main>
-    <div id="toast" role="status" aria-live="polite" hidden></div>
-  </body>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#08111f" name="theme-color"/>
+<meta content="Predict medal changes in Kingdom Rush Battles matches against other players using player-collected match data." data-i18n-content="依玩家實測資料預測 Kingdom Rush Battles 真人對戰獎牌變化。" name="description"/>
+<title data-i18n="KRB 獎牌變化預測工具">KRB Medal Change Predictor</title>
+<link href="/krb-medal-calculator/favicon.svg" rel="icon"/>
+<link href="/krb-medal-calculator/assets/site-20260903-v4.css?v=20261016" rel="stylesheet"/>
+<script src="/krb-medal-calculator/assets/model-20260903-v4.js"></script>
+<script defer="" src="/krb-medal-calculator/assets/i18n-20261016.js"></script><script defer="" src="/krb-medal-calculator/assets/app-20260903-v4.js?v=20261016"></script>
+</head>
+<body>
+<main class="page-shell">
+<div class="language-control"><label for="language-select">中文/English</label><select aria-label="中文/English" id="language-select"><option value="zh">中文</option><option selected="" value="en">English</option></select></div><header class="site-header">
+<div>
+<p class="eyebrow">⚔ KINGDOM RUSH BATTLES</p>
+<h1 data-i18n="獎牌變化預測工具">Medal Change Predictor</h1>
+<p class="intro" data-i18n="只需填入等級數字，順序不影響計算；目前模型不計算卡片稀有度或顏色。">Enter card levels only; their order does not affect the calculation. The current model does not take card rarity or color into account.</p>
+</div>
+<div class="model-badge" data-i18n="模型 2026-09-03-v4">Model 2026-09-03-v4</div>
+</header>
+<div class="battle-grid">
+<section aria-labelledby="self-title" class="battle-panel self-panel">
+<header class="panel-header">
+<span aria-hidden="true" class="panel-emblem" data-i18n="我">YOU</span>
+<div><p>BLUE</p><h2 data-i18n="我方" id="self-title">You</h2></div>
+</header>
+<div class="deck-fields" data-side="self">
+<div class="deck-row hero-row">
+<span class="row-label" data-i18n="英雄">Hero</span>
+<input aria-label="Your Hero Level" class="level-input" data-i18n-aria-label="我方英雄等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+<div class="deck-row">
+<span class="row-label" data-i18n="四塔">4 Towers</span>
+<input aria-label="Your Tower 1 Level" class="level-input" data-i18n-aria-label="我方第1張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Your Tower 2 Level" class="level-input" data-i18n-aria-label="我方第2張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Your Tower 3 Level" class="level-input" data-i18n-aria-label="我方第3張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Your Tower 4 Level" class="level-input" data-i18n-aria-label="我方第4張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+<div class="deck-row">
+<span class="row-label" data-i18n="三法術">3 Spells</span>
+<input aria-label="Your Spell 1 Level" class="level-input" data-i18n-aria-label="我方第1張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Your Spell 2 Level" class="level-input" data-i18n-aria-label="我方第2張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Your Spell 3 Level" class="level-input" data-i18n-aria-label="我方第3張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+</div>
+</section>
+<section aria-labelledby="opponent-title" class="battle-panel opponent-panel">
+<header class="panel-header">
+<span aria-hidden="true" class="panel-emblem" data-i18n="對">OPP</span>
+<div><p>RED</p><h2 data-i18n="對方" id="opponent-title">Opponent</h2></div>
+</header>
+<div class="deck-fields" data-side="opponent">
+<div class="deck-row hero-row">
+<span class="row-label" data-i18n="英雄">Hero</span>
+<input aria-label="Opponent's Hero Level" class="level-input" data-i18n-aria-label="對方英雄等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+<div class="deck-row">
+<span class="row-label" data-i18n="四塔">4 Towers</span>
+<input aria-label="Opponent's Tower 1 Level" class="level-input" data-i18n-aria-label="對方第1張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Opponent's Tower 2 Level" class="level-input" data-i18n-aria-label="對方第2張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Opponent's Tower 3 Level" class="level-input" data-i18n-aria-label="對方第3張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Opponent's Tower 4 Level" class="level-input" data-i18n-aria-label="對方第4張塔等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+<div class="deck-row">
+<span class="row-label" data-i18n="三法術">3 Spells</span>
+<input aria-label="Opponent's Spell 1 Level" class="level-input" data-i18n-aria-label="對方第1張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Opponent's Spell 2 Level" class="level-input" data-i18n-aria-label="對方第2張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+<input aria-label="Opponent's Spell 3 Level" class="level-input" data-i18n-aria-label="對方第3張法術等級" inputmode="numeric" maxlength="2" pattern="[0-9]*"/>
+</div>
+</div>
+</section>
+</div>
+<section class="control-panel">
+<div aria-label="Match Result" class="result-row" data-i18n-aria-label="比賽結果" role="radiogroup">
+<strong class="result-heading" data-i18n="比賽結果：">Match Result:</strong>
+<button aria-checked="false" class="result-choice" data-result="win" id="result-win" role="radio" type="button"><span aria-hidden="true" class="radio-circle"></span><span data-i18n="勝利">Victory</span></button>
+<button aria-checked="false" class="result-choice" data-result="loss" id="result-loss" role="radio" type="button"><span aria-hidden="true" class="radio-circle"></span><span data-i18n="敗北">Defeat</span></button>
+</div>
+<div class="tool-row">
+<button class="secondary-button" data-i18n="套用上次我方牌組" id="apply-deck" type="button">Load My Last Deck</button>
+<button class="secondary-button" data-i18n="清除目前輸入資料" id="clear-all" type="button">Clear All Inputs</button>
+</div>
+<label class="remember-row" for="remember-deck">
+<input id="remember-deck" type="checkbox"/>
+<span><strong data-i18n="記住我的牌組">Remember My Deck</strong><small data-i18n="勾選後，完整的我方牌組會保存在這台裝置，下次開啟時自動帶入。">When checked, your complete deck will be saved on this device and loaded automatically the next time you open this page.</small></span>
+</label>
+</section>
+<section aria-live="polite" class="prediction-panel" hidden="" id="prediction-panel">
+<div>
+<p class="section-kicker" data-i18n="模型預測">Model Prediction</p>
+<p class="prediction-score" id="prediction-score"></p>
+<p class="prediction-note" data-i18n="依雙方最高 3 張卡的等級總和差直接對照分數。">The medal change is looked up directly using the difference between the sums of each player's three highest card levels.</p>
+</div>
+<div class="actual-field">
+<label for="actual-medal"><span data-i18n="我方的實際獎牌變化">Your Actual Medal Change</span><small data-i18n="（不需填入正負號）">(No + or − sign needed)</small></label>
+<input class="actual-input" data-i18n-placeholder="例如：30" id="actual-medal" inputmode="numeric" maxlength="3" pattern="[+-]?[0-9]*" placeholder="e.g. 30"/>
+</div>
+<div class="comparison-status" hidden="" id="comparison-status"></div>
+</section>
+<section class="report-panel" hidden="" id="report-panel">
+<div class="report-heading">
+<div><h2 data-i18n="回報文字">Report</h2><p data-i18n="無論預測是否命中，都請複製並回報。">Please copy and submit the report, whether or not the prediction matched.</p></div>
+<button class="copy-button" data-i18n="一鍵複製" id="copy-report" type="button">Copy Report</button>
+</div>
+<textarea aria-label="Automatically Generated Report" data-i18n-aria-label="自動產生的回報文字" id="report-text" readonly=""></textarea>
+</section>
+<footer data-i18n="本工具依玩家實測資料建立；模型版本更新後，預測結果可能改變。">This tool is based on player-collected match data. Predictions may change when the model is updated.</footer>
+</main>
+<div aria-live="polite" hidden="" id="toast" role="status"></div>
+</body>
 </html>
