@@ -4,7 +4,7 @@
   "KRB 獎牌變化預測工具": "KRB Medal Change Predictor",
   "獎牌變化預測工具": "Medal Change Predictor",
   "只需填入等級數字，順序不影響計算；目前模型不計算卡片稀有度或顏色。": "Enter card levels only; their order does not affect the calculation. The current model does not take card rarity or color into account.",
-  "模型 2026-10-24-v5": "Model 2026-10-24-v5",
+  "模型 2026-10-26-v6": "Model 2026-10-26-v6",
   "我方": "You",
   "對方": "Opponent",
   "我": "YOU",

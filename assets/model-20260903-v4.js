@@ -5,11 +5,11 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const VERSION = "2026-10-24-v5";
+  const VERSION = "2026-10-26-v6";
   const WIN_SCORES = [20, 22, 25, 28, 30, 33, 36, 39, 41, 44, 46, 48, 50];
-  const LOSS_SCORES = [-49, -47, -45, -43, -40, -38, -35, -32, -30, -27, -24, -21, -19, -16, -14, -12, -9];
+  const LOSS_SCORES = [-40, -38, -35, -32, -30, -27, -24, -21, -19, -16, -14, -12, -10, -9];
   const winByDifference = { "-5": 44, "-4": 41, "-3": 39, "-2": 36, "-1": 33, "0": 30, "1": 28, "2": 25, "3": 22 };
-  const lossByDifference = { "-5": -16, "-4": -19, "-3": -21, "-2": -24, "-1": -27, "0": -30, "1": -32, "2": -35, "3": -38, "4": -40, "5": -43 };
+  const lossByDifference = { "-5": -16, "-4": -19, "-3": -21, "-2": -24, "-1": -27, "0": -30, "1": -32, "2": -35, "3": -38 };
 
   function topThreeTotal(cards) {
     if (!Array.isArray(cards) || cards.length !== 8 || cards.some((level) => !Number.isInteger(level))) {
@@ -28,12 +28,11 @@
       return winByDifference[String(difference)];
     }
     if (result === "loss") {
-      if (difference <= -8) return -9;
+      if (difference <= -9) return -9;
+      if (difference === -8) return -10;
       if (difference === -7) return -12;
       if (difference === -6) return -14;
-      if (difference >= 8) return -49;
-      if (difference === 7) return -47;
-      if (difference === 6) return -45;
+      if (difference >= 4) return -40;
       return lossByDifference[String(difference)];
     }
     throw new TypeError("result must be win or loss");
